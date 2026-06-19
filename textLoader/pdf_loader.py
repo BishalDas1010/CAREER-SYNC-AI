@@ -1,12 +1,12 @@
-from langchain_community.document_loaders import PyPDFLoader   # correct loader for PDFs
+from langchain_community.document_loaders import PyPDFLoader   
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
-from langchain_community.embeddings import HuggingFaceEmbeddings   # LangChain-compatible wrapper
+from langchain_community.embeddings import HuggingFaceEmbeddings   
 
 def pdf_loader(pdf_path):
     """Load a PDF and return the list of documents."""
-    loader = PyPDFLoader(pdf_path)   # use the correct loader
-    return loader.load()             # no argument, returns list of Documents
+    loader = PyPDFLoader(pdf_path)  
+    return loader.load()             
 
 def Text_spliter(docs, splitter):
     """Split documents and optionally print chunks."""
@@ -42,7 +42,7 @@ def retriver(query, vectorstore):
 docs = pdf_loader("3242969.3242985.pdf")   # make sure file exists
 
 # Split
-splitter = RecursiveCharacterTextSplitter(chunk_size=50, chunk_overlap=10)
+splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=200)
 chunks = Text_spliter(docs, splitter)
 
 # Create embedding model (use HuggingFaceEmbeddings
@@ -55,3 +55,22 @@ vectorstore = vactor_store(chunks, embeddings)   # embeddings is the model
 
 #  Query
 retriver("what is this paper ?", vectorstore)
+
+results = vectorstore.similarity_search_with_score(
+    "What is Machine Learning?",
+    k=3
+)
+
+for doc, score in results:
+    print(doc.page_content)
+    print(score)
+
+
+results = vectorstore.similarity_search_with_score(
+    "What is Machine Learning?",
+    k=3
+)
+
+for doc, score in results:
+    print(doc.page_content)
+    print(score)
