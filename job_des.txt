@@ -1,0 +1,47 @@
+About the job
+Job Description
+
+Are you looking for an exciting opportunity to join a dynamic and growing team in a fast paced and challenging area? This is a unique opportunity for you to work in our team to partner with the Business to provide a comprehensive view.
+
+As a Software Engineer I at JPMorgan Chase within the Model Risk Governance & Review (MRGR) team, you will be developing tools for MRGR Analytics to improve efficiency and reduce duplication of effort, including resource management and cost optimization tools. You will provide support for model reviewers and governance teams in building independent testing and efficiency tools. You will be delivering high-quality solutions by emphasizing the importance of data controls, testing, user experience and continuously seek input from users to align efforts with their objectives. Bring your expertise to JPMorgan Chase. As part of Risk Management and Compliance, you are at the center of keeping JPMorgan Chase strong and resilient.
+
+The team is responsible for conducting independent model validation and model governance activities to help identify, measure, and mitigate Model Risk in the firm. Within MRGR, the Chief Operating Office (COO) supports model risk stakeholders in their review and governance activities, and drives certain governance activities itself, with responsibility for: product ownership, process engineering and software development for model risk technology and analytics; model risk reporting; administration of oversight committees; project management of the review and governance pipeline; coordination of regulatory/audit deliverables including capital stress testing exercises; and general business management. Within COO, MRGR Analytics provides technology solutions for MRGR and its clients, assisting them in performing their tasks more efficiently, accurately, and with better control. Majority of the solutions are built within Athena (JPMorganChase's proprietary framework using Python language), Tableau and QlikView/QlikSense frameworks.
+
+Job Responsibilities
+
+Develop tools to automate various tasks in the model governance and review lifecycle.
+Build various dashboard reports to help manage the body of work that MRGR deals with.
+Translate the existing business requirements in model risk management space into business applications using applied development work mostly in Python using in-house built Python framework.
+Integrate Large Language Models (LLMs) into existing systems to enhance automation, reporting capabilities and decision-making processes.
+Collaborate with cross-functional teams to identify opportunities for LLM integration and develop solutions that leverage LLM capabilities.
+Build intelligent solutions to support the activities of MRGR staff.
+
+Required Qualifications, Capabilities, And Skills
+
+A Bachelors or Masters degree in a Science, Technology, Engineering, or Mathematics discipline with significant exposure to computer programming.
+Minimum 2 years of full stack application development.
+Proficient in Python and knowledge of Tornado web framework / TypeScript / React required.
+Good understanding of software architecture, object-oriented programming and design patterns.
+Experience with integrating machine learning models, including LLMs, into enterprise applications.
+Strong communication skills with the ability to interface with other functional areas in the firm on business requirements.
+Risk and control mindset: ability to think critically, assess user needs and create design solutions to meet user needs.
+
+Preferred Qualifications, Capabilities, And Skills
+
+Experience in working with large data sets.
+Exposure to LLM integration and deployment in real-world applications.
+Strong UI/UX designing skills.
+Experience in model risk management or financial services space.
+
+ABOUT US
+
+JPMorganChase, one of the oldest financial institutions, offers innovative financial solutions to millions of consumers, small businesses and many of the world's most prominent corporate, institutional and government clients under the J.P. Morgan and Chase brands. Our history spans over 200 years and today we are a leader in investment banking, consumer and small business banking, commercial banking, financial transaction processing and asset management.
+
+We recognize that our people are our strength and the diverse talents they bring to our global workforce are directly linked to our success. We are an equal opportunity employer and place a high value on diversity and inclusion at our company. We do not discriminate on the basis of any protected attribute, including race, religion, color, national origin, gender, sexual orientation, gender identity, gender expression, age, marital or veteran status, pregnancy or disability, or any other basis protected under applicable law. We also make reasonable accommodations for applicants' and employees' religious practices and beliefs, as well as mental health or physical disability needs. Visit our FAQs for more information about requesting an accommodation.
+
+About The Team
+
+Our professionals in our Corporate Functions cover a diverse range of areas from finance and risk to human resources and marketing. Our corporate teams are an essential part of our company, ensuring that we're setting our businesses, clients, customers and employees up for success.
+
+Risk Management helps the firm understand, manage and anticipate risks in a constantly changing environment. The work covers areas such as evaluating country-specific risk, understanding regulatory changes and determining credit worthiness. Risk Management provides independent oversight and maintains an effective control environment.
+
