@@ -32,7 +32,7 @@ class ResumeLoader:
         vectorstore = Chroma.from_documents(
             documents=chunks,
             embedding=embedding_model,
-            persist_directory="./chroma_db"
+            persist_directory="./chroma_db_job"
         )
         return vectorstore
 

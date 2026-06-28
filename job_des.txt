@@ -1,4 +1,4 @@
-About the job
+"""About the job
 Job Description
 
 Are you looking for an exciting opportunity to join a dynamic and growing team in a fast paced and challenging area? This is a unique opportunity for you to work in our team to partner with the Business to provide a comprehensive view.
@@ -45,3 +45,4 @@ Our professionals in our Corporate Functions cover a diverse range of areas from
 
 Risk Management helps the firm understand, manage and anticipate risks in a constantly changing environment. The work covers areas such as evaluating country-specific risk, understanding regulatory changes and determining credit worthiness. Risk Management provides independent oversight and maintains an effective control environment.
 
+"""
