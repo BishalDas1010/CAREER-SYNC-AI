@@ -1,0 +1,64 @@
+# main.py
+from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from ats_analyzer import ATSService
+import uvicorn
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+service = ATSService()
+service._load_embedding_model()
+service.load_llm()
+
+class QuestionRequest(BaseModel):
+    question: str
+
+@app.post("/upload_resume")
+async def upload_resume(file: UploadFile = File(...)):
+    if not file.filename.endswith('.pdf'):
+        raise HTTPException(400, "Resume must be a PDF file.")
+    contents = await file.read()
+    try:
+        service.process_resume(contents)
+        return {"status": "Resume uploaded and indexed."}
+    except Exception as e:
+        raise HTTPException(500, str(e))
+
+@app.post("/upload_jobdesc")
+async def upload_jobdesc(file: UploadFile = File(...)):
+    if not file.filename.endswith('.txt'):
+        raise HTTPException(400, "Job description must be a TXT file.")
+    contents = await file.read()
+    try:
+        service.process_job_description(contents)
+        return {"status": "Job description uploaded and indexed."}
+    except Exception as e:
+        raise HTTPException(500, str(e))
+
+@app.post("/analyze")
+async def analyze():
+    try:
+        service.retrieve_chunks()
+        analysis = service.initial_analysis()
+        return {"analysis": analysis}
+    except Exception as e:
+        raise HTTPException(500, str(e))
+
+@app.post("/ask")
+async def ask(req: QuestionRequest):
+    try:
+        answer = service.ask_question(req.question)
+        return {"answer": answer}
+    except Exception as e:
+        raise HTTPException(500, str(e))
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
