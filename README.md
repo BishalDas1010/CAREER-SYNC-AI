@@ -1,49 +1,85 @@
-# CAREER-SYNC-AI
+# Career-Sync-AI  
+**AI-Powered ATS Resume Analyzer**
 
-## Problem Solved
-Career-Sync-AI solves the problem of evaluating a candidate resume against a job description quickly and intelligently.
+> A smart Applicant Tracking System (ATS) tool that matches resumes against job descriptions, provides detailed analytics, and gives actionable recommendations using Large Language Models.
 
-Many job seekers struggle to understand whether their resume matches a job posting and which skills, keywords, or experience are missing. This project provides an ATS-style resume analysis that:
+---
 
-- compares a resume PDF with a job description text file
-- identifies matching skills and missing skills
-- estimates an ATS match score
-- provides improvement suggestions and a shortlist recommendation
-- answers follow-up questions about the resume and job fit
+## Overview
 
-## How It Works
+**Career-Sync-AI** is an end‑to‑end solution for automated resume screening and job matching. It ingests a resume (PDF) and a job description (TXT), extracts relevant information via embeddings and MMR retrieval, and then uses a state‑of‑the‑art LLM (Mistral) to produce a comprehensive analysis. The output includes:
 
-1. Upload the resume and job description.
-2. The app converts both documents into text and splits them into chunks.
-3. These chunks are embedded and stored in a vector database.
-4. A retriever selects the most relevant resume and job content.
-5. A language model analyzes the matched content and returns:
-   - detailed ATS-style analysis
-   - match percentage
-   - strengths and gaps
-   - improvement actions
-   - a final recommendation
+- ATS match percentage  
+- Matching and missing skills  
+- Keyword gaps  
+- Experience gaps  
+- Strengths and improvement suggestions  
+- A **structured final recommendation** with a verdict (shortlist or not), score, reasons, an upskill plan, and alternative role suggestions.
 
-## Key Components
+The system is built with **FastAPI** (backend) and **Streamlit** (frontend), and is designed to be modular, scalable, and easy to extend.
 
-- `UI/ui.py` - Streamlit front-end for uploading documents, running analysis, and asking questions.
-- `mainCode/ats_analyzer.py` - Core analysis service that builds embeddings, retrieves relevant context, and calls the LLM.
-- `mainCode/main.py` - Example CLI flow for loading documents, indexing them, and running analysis.
-- `mainCode/textLoader/ResumeLoader.py` and `mainCode/textLoader/docs_loader.py` - document loaders and vector store builders.
+---
 
-## Why This Matters
+## 🎯 Problems Solved
 
-This project helps job seekers and hiring teams by turning resume and job description comparison into an automated, explainable process. It removes manual guesswork and highlights where the candidate is a strong fit or where the resume needs improvement.
+| Problem | How Career-Sync-AI Addresses It |
+|---------|--------------------------------|
+| **Manual resume screening is time‑consuming** | Automates the entire screening process with a few clicks, saving hours of HR effort. |
+| **Subjective evaluation** | Provides objective, data‑driven analysis and a clear “shortlist” recommendation with reasoning. |
+| **Missing skills are hard to spot** | Explicitly lists missing skills and keywords required by the job, making gaps obvious. |
+| **No actionable feedback for candidates** | Delivers a personalised upskill plan and alternative role suggestions, helping applicants improve. |
+| **Recruiters struggle to compare candidates** | Returns a quantifiable match score (0‑100) and a structured verdict, enabling easy comparison. |
+| **Lack of context in Q&A** | Allows natural‑language follow‑up questions based on the resume and job description, giving deeper insights. |
+| **Complex infrastructure** | The modular design (FastAPI + Streamlit) makes deployment easy and supports quick updates. |
 
-## Usage
+---
 
-- Upload a resume in PDF format.
-- Upload a job description in TXT format.
-- Run the analysis to see a detailed report and recommendation.
-- Ask follow-up questions to explore specific resume or job details.
+## Key Features
 
-## Notes
+- **📄 Upload & Index**  
+  Supports PDF resumes and plain‑text job descriptions. The system automatically chunks, embeds, and indexes both documents using HuggingFace `all-MiniLM-L6-v2`.
 
-- The system uses embeddings and an LLM to understand semantic similarity.
-- It is designed to work like an ATS-aware resume reviewer, not just a keyword matcher.
-- The project currently expects local model/LLM access through configured environment settings.
+- **🔍 Intelligent Retrieval**  
+  Uses **MMR (Maximum Marginal Relevance)** to retrieve the most relevant chunks from both documents, reducing redundancy and focusing on the most informative parts.
+
+- **LLM‑Powered Analysis**  
+  Leverages **Mistral Large** (via LangChain) to generate detailed, human‑like analysis and a structured JSON recommendation.
+
+- **Interactive Dashboard**  
+  Streamlit frontend provides a clean, user‑friendly interface with:
+  - **Coloured verdict** (shortlist / do not shortlist)
+  - **Score progress bar**
+  - **Expandable waypoints** for each analysis section (ATS Match, Matching Skills, Missing Skills, etc.)
+  - **Follow‑up Q&A** – ask any question about the resume or job description.
+
+- ** Scalable & Modular**  
+  The code is organised into services (embedding, retrieval, LLM) and can be extended with new models, file formats, or analysis modules.
+
+---
+
+## Tech Stack
+
+| Component | Technology |
+|-----------|------------|
+| Backend API | **FastAPI** (Python) |
+| Frontend UI | **Streamlit** (Python) |
+| Embeddings | **HuggingFace `all-MiniLM-L6-v2`** (via `langchain-community`) |
+| Vector Store | In‑memory (FAISS‑based) via LangChain |
+| Language Model | **Mistral Large** (`mistralai/mistral-large-latest`) via `langchain-mistralai` |
+| Text Processing | `RecursiveCharacterTextSplitter` |
+| Retrieval | **MMR** (Maximum Marginal Relevance) |
+| File Parsing | Custom `ResumeLoader` (PDF) & `docs_loader` (TXT) |
+| Environment | Python 3.10+ |
+
+---
+
+## 🏗️ Architecture Overview
+<p align="center">
+  <img src="Carrer-Sync-AI.jpg" width="500">
+</p>
+
+<h1 align="center">Career-Sync AI</h1>
+
+<p align="center">
+  AI-powered Resume Analyzer using RAG, LangChain, ChromaDB & Mistral AI
+</p>
