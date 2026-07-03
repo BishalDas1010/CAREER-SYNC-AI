@@ -82,4 +82,8 @@ The system is built with **FastAPI** (backend) and **Streamlit** (frontend), and
 
 <p align="center">
   AI-powered Resume Analyzer using RAG, LangChain, ChromaDB & Mistral AI
+<<<<<<< HEAD
 </p>
+=======
+</p>
+>>>>>>> e1401b3 (README.md added)

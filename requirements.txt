@@ -32,11 +32,6 @@ tiktoken
 
 python-dotenv
 
-# Data Handling
-
-pandas
-numpy
-
 # API / App Layer (optional but common in RAG apps)
 
 fastapi
