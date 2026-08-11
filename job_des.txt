@@ -1,48 +1,177 @@
-"""About the job
-Job Description
+# Machine Learning Engineer (2026)
 
-Are you looking for an exciting opportunity to join a dynamic and growing team in a fast paced and challenging area? This is a unique opportunity for you to work in our team to partner with the Business to provide a comprehensive view.
+## About the Role
 
-As a Software Engineer I at JPMorgan Chase within the Model Risk Governance & Review (MRGR) team, you will be developing tools for MRGR Analytics to improve efficiency and reduce duplication of effort, including resource management and cost optimization tools. You will provide support for model reviewers and governance teams in building independent testing and efficiency tools. You will be delivering high-quality solutions by emphasizing the importance of data controls, testing, user experience and continuously seek input from users to align efforts with their objectives. Bring your expertise to JPMorgan Chase. As part of Risk Management and Compliance, you are at the center of keeping JPMorgan Chase strong and resilient.
+We are looking for a passionate Machine Learning Engineer to design, build, and deploy AI-powered applications. You will work closely with software engineers, data scientists, and product teams to develop scalable ML systems, LLM-based applications, and intelligent automation solutions. The ideal candidate enjoys solving real-world problems using modern AI technologies and writing production-quality code.
 
-The team is responsible for conducting independent model validation and model governance activities to help identify, measure, and mitigate Model Risk in the firm. Within MRGR, the Chief Operating Office (COO) supports model risk stakeholders in their review and governance activities, and drives certain governance activities itself, with responsibility for: product ownership, process engineering and software development for model risk technology and analytics; model risk reporting; administration of oversight committees; project management of the review and governance pipeline; coordination of regulatory/audit deliverables including capital stress testing exercises; and general business management. Within COO, MRGR Analytics provides technology solutions for MRGR and its clients, assisting them in performing their tasks more efficiently, accurately, and with better control. Majority of the solutions are built within Athena (JPMorganChase's proprietary framework using Python language), Tableau and QlikView/QlikSense frameworks.
+---
 
-Job Responsibilities
+## Key Responsibilities
 
-Develop tools to automate various tasks in the model governance and review lifecycle.
-Build various dashboard reports to help manage the body of work that MRGR deals with.
-Translate the existing business requirements in model risk management space into business applications using applied development work mostly in Python using in-house built Python framework.
-Integrate Large Language Models (LLMs) into existing systems to enhance automation, reporting capabilities and decision-making processes.
-Collaborate with cross-functional teams to identify opportunities for LLM integration and develop solutions that leverage LLM capabilities.
-Build intelligent solutions to support the activities of MRGR staff.
+* Design, train, evaluate, and deploy Machine Learning models.
+* Build and maintain end-to-end ML pipelines.
+* Develop Retrieval-Augmented Generation (RAG) systems using Vector Databases.
+* Fine-tune and optimize Large Language Models (LLMs) when required.
+* Build AI agents and multi-agent workflows using frameworks such as LangGraph or CrewAI.
+* Develop REST APIs using FastAPI for AI services.
+* Implement prompt engineering and structured outputs for LLM applications.
+* Work with embeddings, semantic search, and document retrieval systems.
+* Optimize model latency, inference speed, and cloud deployment costs.
+* Monitor production ML models for performance, drift, and reliability.
+* Collaborate with backend developers and product teams to integrate AI features into applications.
+* Write clean, maintainable, and well-tested Python code.
+* Deploy AI applications using Docker and cloud platforms.
 
-Required Qualifications, Capabilities, And Skills
+---
 
-A Bachelors or Masters degree in a Science, Technology, Engineering, or Mathematics discipline with significant exposure to computer programming.
-Minimum 2 years of full stack application development.
-Proficient in Python and knowledge of Tornado web framework / TypeScript / React required.
-Good understanding of software architecture, object-oriented programming and design patterns.
-Experience with integrating machine learning models, including LLMs, into enterprise applications.
-Strong communication skills with the ability to interface with other functional areas in the firm on business requirements.
-Risk and control mindset: ability to think critically, assess user needs and create design solutions to meet user needs.
+## Required Skills
 
-Preferred Qualifications, Capabilities, And Skills
+### Programming
 
-Experience in working with large data sets.
-Exposure to LLM integration and deployment in real-world applications.
-Strong UI/UX designing skills.
-Experience in model risk management or financial services space.
+* Python
+* SQL
+* Git & GitHub
+* Linux
 
-ABOUT US
+### Machine Learning
 
-JPMorganChase, one of the oldest financial institutions, offers innovative financial solutions to millions of consumers, small businesses and many of the world's most prominent corporate, institutional and government clients under the J.P. Morgan and Chase brands. Our history spans over 200 years and today we are a leader in investment banking, consumer and small business banking, commercial banking, financial transaction processing and asset management.
+* Supervised & Unsupervised Learning
+* Model Evaluation
+* Feature Engineering
+* Hyperparameter Tuning
+* Scikit-learn
+* XGBoost / LightGBM / CatBoost
 
-We recognize that our people are our strength and the diverse talents they bring to our global workforce are directly linked to our success. We are an equal opportunity employer and place a high value on diversity and inclusion at our company. We do not discriminate on the basis of any protected attribute, including race, religion, color, national origin, gender, sexual orientation, gender identity, gender expression, age, marital or veteran status, pregnancy or disability, or any other basis protected under applicable law. We also make reasonable accommodations for applicants' and employees' religious practices and beliefs, as well as mental health or physical disability needs. Visit our FAQs for more information about requesting an accommodation.
+### Deep Learning
 
-About The Team
+* PyTorch or TensorFlow
+* Neural Networks
+* CNNs
+* RNNs (basic understanding)
+* Transformers
 
-Our professionals in our Corporate Functions cover a diverse range of areas from finance and risk to human resources and marketing. Our corporate teams are an essential part of our company, ensuring that we're setting our businesses, clients, customers and employees up for success.
+### Generative AI
 
-Risk Management helps the firm understand, manage and anticipate risks in a constantly changing environment. The work covers areas such as evaluating country-specific risk, understanding regulatory changes and determining credit worthiness. Risk Management provides independent oversight and maintains an effective control environment.
+* Large Language Models (LLMs)
+* Prompt Engineering
+* Embeddings
+* RAG Pipelines
+* Function Calling
+* Structured Outputs
+* Agentic AI
+* LangChain
+* LangGraph
+* MCP (Model Context Protocol)
 
-"""
+### Databases
+
+* PostgreSQL
+* ChromaDB / FAISS / Pinecone / Qdrant
+* Redis (preferred)
+
+### Backend Development
+
+* FastAPI
+* REST APIs
+* JWT Authentication
+* Async Programming
+
+### Cloud & DevOps
+
+* Docker
+* AWS / Azure / GCP
+* CI/CD Pipelines
+* Kubernetes (preferred)
+
+---
+
+## Preferred Qualifications
+
+* B.Tech/M.Tech in Computer Science, AI, Data Science, or a related field.
+* Strong understanding of Data Structures and Algorithms.
+* Experience deploying ML models to production.
+* Experience building scalable AI systems.
+* Familiarity with MLOps tools such as MLflow, Weights & Biases, or Kubeflow.
+* Experience with monitoring, logging, and model observability.
+* Knowledge of vector databases and semantic search.
+* Understanding of software engineering best practices.
+
+---
+
+## Nice to Have
+
+* Fine-tuning LLMs (LoRA, QLoRA, PEFT)
+* Hugging Face Transformers
+* Computer Vision
+* NLP
+* Speech AI
+* Reinforcement Learning
+* Multi-Agent Systems
+* Kafka or message queues
+* Spark or distributed data processing
+
+---
+
+## Soft Skills
+
+* Strong problem-solving ability
+* Excellent communication
+* Team collaboration
+* Product thinking
+* Ownership mindset
+* Ability to learn new technologies quickly
+
+---
+
+## Sample Tech Stack (2026)
+
+* Python
+* FastAPI
+* PostgreSQL
+* ChromaDB / Qdrant
+* LangChain
+* LangGraph
+* OpenAI / Claude / Gemini / Mistral APIs
+* Docker
+* AWS
+* GitHub Actions
+* MLflow
+* PyTorch
+* Hugging Face
+* Redis
+
+---
+
+## Typical Interview Topics
+
+* Python
+* SQL
+* Data Structures & Algorithms
+* Statistics & Probability
+* Machine Learning Algorithms
+* Feature Engineering
+* Model Evaluation Metrics
+* Deep Learning
+* Transformers
+* LLM Architecture
+* RAG Design
+* Vector Databases
+* Prompt Engineering
+* FastAPI
+* System Design for ML
+* Docker & Deployment
+* MLOps
+* Behavioral Questions
+
+---
+
+## What Makes a Strong Candidate in 2026
+
+* Production-ready AI projects
+* Real-world RAG systems
+* Agentic AI applications
+* End-to-end deployment experience
+* Strong backend engineering skills
+* Knowledge of cloud deployment
+* GitHub portfolio with well-documented projects
+* Ability to explain design decisions and trade-offs

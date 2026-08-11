@@ -8,16 +8,15 @@ API_BASE = "http://localhost:8000"
 st.set_page_config(page_title="ATS Resume Analyzer", layout="wide")
 st.title("📄 ATS Resume Analyzer")
 
-# ---------- Helper: parse analysis into sections ----------
+
 def parse_analysis_sections(text):
     """
     Safely parse analysis text, handling dict or string input.
     Returns a list of dicts: [{"title": "...", "content": "..."}, ...]
     """
-    # If we got a dict, extract the "analysis" key
     if isinstance(text, dict):
         text = text.get("analysis", "")
-    # Ensure it's a string
+    
     if not isinstance(text, str):
         return [{"title": "Analysis", "content": str(text)}]
     # If empty, return a placeholder
