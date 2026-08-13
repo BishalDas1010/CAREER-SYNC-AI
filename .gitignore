@@ -10,3 +10,4 @@ chroma_db_resume/
 *.pyc
 *.pyo
 *.pyd
+UI/
