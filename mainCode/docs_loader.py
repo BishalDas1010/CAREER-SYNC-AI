@@ -21,11 +21,8 @@ class pdf_upload:
         loaders = {
             ".pdf": "pdf",
             ".txt": "text",
-            ".csv": "csv",
-            ".docx": "docx",
-            ".pptx": "pptx",
-            ".html": "html",
-            ".htm": "html"
+            ".csv": "csv"
+
         }
 
         return loaders.get(extension, None)
