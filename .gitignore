@@ -1,13 +1,24 @@
+# Virtual environment
 myenv/
-api_key/
-IMPORTANT.md
-__pycache__/
+
+# Environment variables / secrets
 .env
+api_key/
 API_KEY.py
-chroma_db/
-chroma_db_job/
-chroma_db_resume/
+
+# Important/private files
+IMPORTANT.md
+
+# Python cache
+__pycache__/
 *.pyc
 *.pyo
 *.pyd
+
+# ChromaDB / vector databases
+chroma_db/
+chroma_db_job/
+chroma_db_resume/
+
+# UI folder
 UI/
