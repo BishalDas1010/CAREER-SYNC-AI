@@ -29,4 +29,6 @@ vactor_store =Chroma.from_documents(
     persist_directory="./chroma_db"
 )
 
+
+
 print("save successfully!")
