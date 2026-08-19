@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
 import './css_for_web/LoginPage.css'
-
+import { Link, useNavigate } from 'react-router-dom'
 const IconMail = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
     <rect x="2" y="4" width="20" height="16" rx="2" />
@@ -60,10 +59,38 @@ export default function LoginPage() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log('Login submitted:', form)
+const handleSubmit = async (e) => {
+  e.preventDefault()
+
+  try {
+    const response = await fetch("http://localhost:8000/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: form.email,
+        password: form.password,
+      }),
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      console.error("Login failed:", data)
+      return
+    }
+
+    console.log("Login successful:", data)
+    navigate("/dashboard", {
+  state: {
+    username: data.email
   }
+  })
+  } catch (error) {
+    console.error("Cannot connect to FastAPI:", error)
+  }
+}
 
   return (
     <div className="login">

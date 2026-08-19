@@ -28,7 +28,3 @@ def login(data: LoginRequest):
         "message": "Login successful",
         "email": data.email
     }
-
-@app.get("/api/from")
-def form():
-    pass
