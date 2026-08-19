@@ -67,7 +67,7 @@ except Exception:
         model_kwargs={"device": "cpu"},
     )
 
-# 3. Create vector store
+#  Create vector store
 vector_store = Chroma.from_documents(
     documents=chunks,
     embedding=embedding,
@@ -203,6 +203,7 @@ for doc in all_retrieved:
 
 print("\nGenerating ground truth from retrieved candidates...")
 ground_truth_ids = generate_ground_truth_ids(query, unique_docs)
+
 print(f"Ground truth relevant IDs: {ground_truth_ids}")
 
 
@@ -249,20 +250,20 @@ print("\n\n")
 print("=" * 70)
 print("              RETRIEVER EVALUATION")
 print("=" * 70)
-print(f"\nSimilarity Search      Precision@2: {sim_prec:.2f}   Recall@2: {sim_rec:.2f}")
-print(f"MMR Retriever          Precision@2: {mmr_prec:.2f}   Recall@2: {mmr_rec:.2f}")
-print(f"Multi-Query Retriever  Precision@2: {mqr_prec:.2f}   Recall@2: {mqr_rec:.2f}")
+print(f"\nSimilarity Search Precision@2: {sim_prec:.2f} and Recall@2: {sim_rec:.2f}")
+print(f"MMR Retriever Precision@2: {mmr_prec:.2f} and  Recall@2: {mmr_rec:.2f}")
+print(f"Multi-Query Retriever Precision@2: {mqr_prec:.2f} and Recall@2: {mqr_rec:.2f}")
 
 print("\n\n")
 print("=" * 70)
 print("              FINAL COMPARISON")
 print("=" * 70)
 print(f"""
-Retriever              Precision@2       Recall@2
+Retriever              Precision@2         Recall@2
 ------------------------------------------------------
-Similarity Search      {sim_prec:.2f}              {sim_rec:.2f}
-MMR Retriever          {mmr_prec:.2f}              {mmr_rec:.2f}
-Multi-Query Retriever  {mqr_prec:.2f}              {mqr_rec:.2f}
+Similarity Search      {sim_prec:.2f}  {sim_rec:.2f}
+MMR Retriever          {mmr_prec:.2f}  {mmr_rec:.2f}
+Multi-Query Retriever  {mqr_prec:.2f}   {mqr_rec:.2f}
 """)
 
 
@@ -276,11 +277,104 @@ print(f"Similarity: {sim_ids}")
 print(f"MMR:        {mmr_ids}")
 print(f"MQR:        {mqr_ids}")
 
-# Print content of the first similarity result for quick check
-if similarity_docs:
-    print("\n--- Content of first similarity result ---")
-    print(similarity_docs[0].page_content[:500])
+# select the best ritriver from there 
+
+
+
+# Dynamically select the best retriever
+
+
+def f1_score(precision, recall):
+    if precision + recall == 0:
+        return 0.0
+    return 2 * precision * recall / (precision + recall)
+
+sim_f1 = f1_score(sim_prec, sim_rec)
+mmr_f1 = f1_score(mmr_prec, mmr_rec)
+mqr_f1 = f1_score(mqr_prec, mqr_rec)
+
+retriever_scores = {
+    "similarity": {"precision": sim_prec, "recall": sim_rec, "f1": sim_f1, "docs": similarity_docs},
+    "mmr":        {"precision": mmr_prec, "recall": mmr_rec, "f1": mmr_f1, "docs": mmr_docs},
+    "mqr":        {"precision": mqr_prec, "recall": mqr_rec, "f1": mqr_f1, "docs": mqr_docs},
+}
+
+# Pick the retriever with the highest F1; tie-break on recall
+best_name = max(
+    retriever_scores,
+    key=lambda name: (retriever_scores[name]["f1"], retriever_scores[name]["recall"])
+)
+best_docs = retriever_scores[best_name]["docs"]
+
+print("\n\n" + "=" * 70)
+print("              BEST RETRIEVER SELECTED")
+print("=" * 70)
+for name, scores in retriever_scores.items():
+    marker = " <== BEST" if name == best_name else ""
+    print(f"{name:12s} F1: {scores['f1']:.2f}  (P: {scores['precision']:.2f}, R: {scores['recall']:.2f}){marker}")
+
+print(f"\nSelected retriever: '{best_name}'")
+print(f"Docs used downstream: {[d.metadata.get('chunk_id') for d in best_docs]}")
 
 
 
 
+def build_context(docs):
+    context_parts = []
+    for doc in docs:
+        chunk_id = doc.metadata.get("chunk_id")
+        context_parts.append(f"[{chunk_id}]\n{doc.page_content}")
+    return "\n\n".join(context_parts)
+
+context = build_context(best_docs)
+
+# Interactive chat loop (uses the already-selected best retriever type)
+
+#find the best retriver 
+retriever_map = {
+    "similarity": similarity_retriever,
+    "mmr": mmr_retriever,
+    "mqr": mqr_retriever,
+}
+active_retriever = retriever_map[best_name]
+
+print(f"\nUsing '{best_name}' retriever for the chat session (F1: {retriever_scores[best_name]['f1']:.2f})")
+
+words = ["exit", "end", "out"]
+
+while True:
+    query = input("\nAsk a question: ").strip()
+
+    if query.lower() in words:
+        print("Goodbye :)")
+        break
+
+    if not query:
+        continue
+
+    # Retrieve fresh docs for THIS question using the winning retriever
+    retrieved_docs = active_retriever.invoke(query)
+    context = build_context(retrieved_docs)
+
+    rag_prompt = f"""
+You are a helpful assistant answering questions based ONLY on the provided context.
+If the answer is not present in the context, say you don't have enough information.
+
+Context:
+{context}
+
+Question:
+{query}
+
+Answer clearly and concisely, citing chunk IDs (like [chunk_2]) where relevant.
+"""
+
+    print("\n\n" + "=" * 70)
+    print("              FINAL ANSWER GENERATION")
+    print("=" * 70)
+
+    response = llm.invoke(rag_prompt)
+    answer = response.content.strip()
+
+    print(f"\nQuestion: {query}")
+    print(f"\nAnswer:\n{answer}")
