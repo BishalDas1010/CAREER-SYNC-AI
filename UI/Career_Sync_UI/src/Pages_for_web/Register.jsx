@@ -2,6 +2,14 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import "./css_for_web/Register.css";
 
+
+import { supabase } from "../lib/supabaseClient"
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000"
+
+
+
+
 export default function Register() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -50,56 +58,75 @@ export default function Register() {
     return null;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const validationError = validate();
-    if (validationError) {
-      setError({ type: "generic", message: validationError });
+
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const validationError = validate();
+  if (validationError) {
+    setError({ type: "generic", message: validationError });
+    return;
+  }
+
+  setLoading(true);
+  setError(null);
+
+  try {
+    const res = await fetch(`${API_BASE}/api/auth/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        fullName: formData.fullName,
+        email: formData.email,
+        password: formData.password,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      if (res.status === 409 || data.detail?.toLowerCase().includes("already")) {
+        setError({
+          type: "exists",
+          message: "An account with this email already exists.",
+        });
+      } else {
+        setError({
+          type: "generic",
+          message: data.detail || "Something went wrong. Please try again.",
+        });
+      }
+      setLoading(false);
       return;
     }
 
-    setLoading(true);
-    setError(null);
-
-    try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fullName: formData.fullName,
-          email: formData.email,
-          password: formData.password,
-        }),
+    if (data.email_confirmation_required) {
+      // No session yet — user must verify the OTP first.
+      navigate("/verify-otp", {
+        state: { email: formData.email, fullName: formData.fullName },
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        if (res.status === 409 || data.code === "EMAIL_EXISTS") {
-          setError({
-            type: "exists",
-            message: "An account with this email already exists.",
-          });
-        } else {
-          setError({
-            type: "generic",
-            message: data.message || "Something went wrong. Please try again.",
-          });
-        }
-        setLoading(false);
-        return;
-      }
-
-      if (data.token) localStorage.setItem("token", data.token);
-      navigate("/onboarding", { state: { email: formData.email } });
-    } catch (err) {
-      setError({
-        type: "generic",
-        message: "Network error. Please check your connection and try again.",
-      });
-      setLoading(false);
+      return;
     }
-  };
+
+    // Confirmation disabled — Supabase already gave us a real session.
+    if (supabase && data.access_token && data.refresh_token) {
+      await supabase.auth.setSession({
+        access_token: data.access_token,
+        refresh_token: data.refresh_token,
+      });
+    }
+
+    navigate("/onboarding", {
+      state: { email: formData.email, fullName: formData.fullName },
+    });
+  } catch (err) {
+    setError({
+      type: "generic",
+      message: "Network error. Please check your connection and try again.",
+    });
+    setLoading(false);
+  }
+};
 
   return (
     <div className="login-page">

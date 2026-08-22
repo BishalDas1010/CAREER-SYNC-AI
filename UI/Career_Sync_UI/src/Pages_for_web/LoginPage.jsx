@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import './css_for_web/LoginPage.css'
 import { Link, useNavigate } from 'react-router-dom'
+
+import { supabase, checkProfile, loginWithPassword } from '../lib/supabaseClient'
+
 const IconMail = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
     <rect x="2" y="4" width="20" height="16" rx="2" />
@@ -52,45 +55,77 @@ const IconShield = () => (
 )
 
 export default function LoginPage() {
+  const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
   const [form, setForm] = useState({ email: '', password: '' })
+  const [error, setError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-const handleSubmit = async (e) => {
-  e.preventDefault()
+  const routeAfterAuth = async (session) => {
+    if (!session?.access_token) {
+      throw new Error('No access token returned from auth.')
+    }
 
-  try {
-    const response = await fetch("http://localhost:8000/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: form.email,
-        password: form.password,
-      }),
-    })
+    const data = await checkProfile(session.access_token)
+    if (data.profile_exists) {
+      navigate('/dashboard', { state: { email: data.user.email, profile: data.profile } })
+    } else {
+      navigate('/create-account', { state: { email: data.user.email } })
+    }
+  }
 
-    const data = await response.json()
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setError('')
+    setSubmitting(true)
 
-    if (!response.ok) {
-      console.error("Login failed:", data)
+    try {
+      const data = await loginWithPassword(form.email, form.password)
+
+      if (supabase && data?.access_token && data?.refresh_token) {
+        await supabase.auth.setSession({
+          access_token: data.access_token,
+          refresh_token: data.refresh_token,
+        })
+      }
+
+      if (data?.access_token) {
+        await routeAfterAuth({ access_token: data.access_token })
+      } else if (data?.profile_exists !== undefined) {
+        if (data.profile_exists) {
+          navigate('/dashboard', { state: { email: data.user.email, profile: data.profile } })
+        } else {
+          navigate('/create-account', { state: { email: data.user.email } })
+        }
+      }
+    } catch (err) {
+      console.error('Login failed:', err)
+      setError(err.message || 'Could not reach the server. Is the FastAPI backend running on port 8000?')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleGoogleLogin = async () => {
+    setError('')
+
+    if (!supabase) {
+      setError('Google login is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your frontend .env file.')
       return
     }
 
-    console.log("Login successful:", data)
-    navigate("/dashboard", {
-  state: {
-    username: data.email
+    const { error: oauthError } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    })
+    if (oauthError) setError(oauthError.message)
   }
-  })
-  } catch (error) {
-    console.error("Cannot connect to FastAPI:", error)
-  }
-}
 
   return (
     <div className="login">
@@ -133,6 +168,8 @@ const handleSubmit = async (e) => {
           <h2 className="login__cardTitle">Welcome Back <span aria-hidden="true">👋</span></h2>
           <p className="login__cardSub">Login to continue your journey</p>
 
+          {error && <p className="login__error" role="alert">{error}</p>}
+
           <form onSubmit={handleSubmit} noValidate>
             <label className="login__label" htmlFor="email">Email Address</label>
             <div className="login__inputWrap">
@@ -145,6 +182,7 @@ const handleSubmit = async (e) => {
                 value={form.email}
                 onChange={handleChange}
                 autoComplete="email"
+                required
               />
             </div>
 
@@ -159,6 +197,7 @@ const handleSubmit = async (e) => {
                 value={form.password}
                 onChange={handleChange}
                 autoComplete="current-password"
+                required
               />
               <button
                 type="button"
@@ -174,8 +213,8 @@ const handleSubmit = async (e) => {
               <a href="#forgot" className="login__link">Forgot Password?</a>
             </div>
 
-            <button type="submit" className="btn btn--primary login__submit">
-              Login
+            <button type="submit" className="btn btn--primary login__submit" disabled={submitting}>
+              {submitting ? 'Logging in…' : 'Login'}
               <span className="btn__arrow" aria-hidden="true">&rarr;</span>
             </button>
           </form>
@@ -183,11 +222,11 @@ const handleSubmit = async (e) => {
           <div className="login__divider"><span>or continue with</span></div>
 
           <div className="login__oauthRow">
-            <button type="button" className="login__oauthBtn">
+            <button type="button" className="login__oauthBtn" onClick={handleGoogleLogin}>
               <IconGoogle />
               Google
             </button>
-            <button type="button" className="login__oauthBtn">
+            <button type="button" className="login__oauthBtn" disabled title="Coming soon">
               <IconGithub />
               GitHub
             </button>

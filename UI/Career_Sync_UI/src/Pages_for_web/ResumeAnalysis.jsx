@@ -1,22 +1,32 @@
 import React from "react";
-import {
-  LayoutDashboard,
-  FileText,
-  Target,
-  Map,
-  Briefcase,
-  MessageSquare,
-  Bookmark,
-  Settings,
-  LogOut,
-  Sparkles,
-  UploadCloud,
-  CheckCircle2,
-  AlertTriangle,
-  XCircle,
-  ChevronRight,
-  Wand2,
-} from "lucide-react";
+
+// Minimal placeholder icons to avoid pulling the `lucide-react` dependency
+// in environments where React 19 causes peer dependency conflicts.
+const IconPlaceholder = ({ label = "", size = 18, className = "" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" className={className} aria-hidden>
+    <rect x="2" y="2" width="20" height="20" rx="3" fill="currentColor" opacity="0.08" />
+    <text x="50%" y="55%" dominantBaseline="middle" textAnchor="middle" fontSize="9" fill="currentColor">
+      {label}
+    </text>
+  </svg>
+);
+
+const LayoutDashboard = (props) => <IconPlaceholder label="DB" {...props} />;
+const FileText = (props) => <IconPlaceholder label="FT" {...props} />;
+const Target = (props) => <IconPlaceholder label="T" {...props} />;
+const Map = (props) => <IconPlaceholder label="M" {...props} />;
+const Briefcase = (props) => <IconPlaceholder label="B" {...props} />;
+const MessageSquare = (props) => <IconPlaceholder label="MS" {...props} />;
+const Bookmark = (props) => <IconPlaceholder label="BK" {...props} />;
+const Settings = (props) => <IconPlaceholder label="S" {...props} />;
+const LogOut = (props) => <IconPlaceholder label="LO" {...props} />;
+const Sparkles = (props) => <IconPlaceholder label="*" {...props} />;
+const UploadCloud = (props) => <IconPlaceholder label="U" {...props} />;
+const CheckCircle2 = (props) => <IconPlaceholder label="✓" {...props} />;
+const AlertTriangle = (props) => <IconPlaceholder label="!" {...props} />;
+const XCircle = (props) => <IconPlaceholder label="✕" {...props} />;
+const ChevronRight = (props) => <IconPlaceholder label=">" {...props} />;
+const Wand2 = (props) => <IconPlaceholder label="✨" {...props} />;
 import './css_for_web/ResumeAnalysis.css'
 
 const navItems = [

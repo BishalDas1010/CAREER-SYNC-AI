@@ -3,6 +3,13 @@ import { useNavigate, useLocation } from "react-router-dom";
 import './css_for_web/Deshboard.css'
 
 
+import { supabase } from "../lib/supabaseClient"
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000"
+
+
+
+
 const TOTAL_STEPS = 4;
 
 const ROLE_OPTIONS = [
@@ -46,31 +53,38 @@ export default function Onboarding() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleNext = async (e) => {
-    e.preventDefault();
+const handleNext = async (e) => {
+  e.preventDefault();
 
-    if (step < TOTAL_STEPS) {
-      setStep(step + 1);
-      return;
-    }
+  if (step < TOTAL_STEPS) {
+    setStep(step + 1);
+    return;
+  }
 
-    // final step submit
-    try {
-      await fetch("/api/onboarding", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: location.state?.email,
-          ...formData,
-        }),
-      });
-    } catch (err) {
-      // non-blocking — still move user forward
-      console.error("Onboarding save failed:", err);
-    }
+  try {
+    const { data: sessionData } = await supabase.auth.getSession();
+    const accessToken = sessionData?.session?.access_token;
 
-    navigate("/dashboard");
-  };
+    await fetch(`${API_BASE}/api/profile`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      },
+      body: JSON.stringify({
+        full_name: location.state?.email?.split("@")[0] ?? "",
+        current_role: formData.currentRole,
+        education: formData.education,
+        experience: formData.experience,
+        career_goals: formData.careerGoals,
+      }),
+    });
+  } catch (err) {
+    console.error("Onboarding save failed:", err);
+  }
+
+  navigate("/dashboard");
+};
 
   const handleBack = () => {
     if (step > 1) setStep(step - 1);
