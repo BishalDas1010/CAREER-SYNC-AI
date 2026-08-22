@@ -48,3 +48,8 @@ requests
 
 
 #
+python-jose[cryptography]
+passlib[bcrypt]
+httpx
+pydantic[email]
+python-multipart
