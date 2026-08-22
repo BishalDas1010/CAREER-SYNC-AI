@@ -330,7 +330,7 @@ context = build_context(best_docs)
 
 # Interactive chat loop (uses the already-selected best retriever type)
 
-#find the best retriver 
+#find the best retri
 retriever_map = {
     "similarity": similarity_retriever,
     "mmr": mmr_retriever,

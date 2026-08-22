@@ -74,27 +74,50 @@ class RegisterPayload(BaseModel):
 
 @app.post("/api/auth/register")
 def register(payload: RegisterPayload):
-    """Creates the Supabase auth user. Profile row is created later in onboarding."""
+
     try:
-        auth_response = supabase.auth.sign_up(
-            {"email": payload.email, "password": payload.password}
-        )
+        auth_response = supabase.auth.sign_up({
+            "email": payload.email,
+            "password": payload.password,
+            "options": {
+                "data": {
+                    "full_name": payload.fullName
+                }
+            }
+        })
+
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        error = str(e)
+
+        if "rate limit" in error.lower():
+            raise HTTPException(
+                status_code=429,
+                detail="Too many verification emails were requested. Please try again later."
+            )
+
+        raise HTTPException(
+            status_code=400,
+            detail=error
+        )
 
     if not auth_response.user:
-        raise HTTPException(status_code=400, detail="Could not create account")
+        raise HTTPException(
+            status_code=400,
+            detail="Could not create account"
+        )
 
-    # Supabase only returns a session if email confirmation is disabled.
     session = auth_response.session
 
     return {
-        "user": {"id": auth_response.user.id, "email": auth_response.user.email},
+        "message": "Registration successful",
+        "user": {
+            "id": auth_response.user.id,
+            "email": auth_response.user.email
+        },
         "access_token": session.access_token if session else None,
         "refresh_token": session.refresh_token if session else None,
-        "email_confirmation_required": session is None,
+        "email_confirmation_required": session is None
     }
-
  
 @app.post("/api/auth/login")
 def login(payload: LoginPayload):
