@@ -8,6 +8,12 @@ from pydantic import BaseModel
 from supabase import Client, create_client
 
 load_dotenv()
+import logging
+import traceback
+
+# Set up logging at the top of your file (after imports)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # connecting with the superbase so we need them
 SUPABASE_URL = os.environ["VITE_SUPABASE_URL"]
@@ -104,6 +110,8 @@ def register(payload: RegisterPayload):
     #  frontend
     except Exception as e:
         error = str(e)
+        #log the exact error with full traceback 
+        logger.error("Supabase sign-up failed: %s", error, exc_info=True)
         #If Supabase says Too many requests
         if "rate limit" in error.lower():
             raise HTTPException(
@@ -123,6 +131,9 @@ def register(payload: RegisterPayload):
     #“If Supabase didn't return a user after the signup attempt,
     #  something went wrong with account creation.”
     if not auth_response.user:
+
+        # Log the full response to understand why user is None
+        logger.error("Supabase returned no user. Full response: %s", auth_response)
         raise HTTPException(
             status_code=400,
             detail="Could not create account"

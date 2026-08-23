@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import './css_for_web/Deshboard.css'
+import './css_for_web/Onboarding.css'
 
 
 import { supabase } from "../lib/supabaseClient"
