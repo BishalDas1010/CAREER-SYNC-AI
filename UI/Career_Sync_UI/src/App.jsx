@@ -6,8 +6,12 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import HomePage from './Pages_for_web/firstPage'
 import LoginPage from './Pages_for_web/LoginPage'
 import Register from './Pages_for_web/Register'
+
 import ResumeAnalysis from './Pages_for_web/ResumeAnalysis'
 import VerifyOtp from './Pages_for_web/VerifyOtp'
+
+import CareerSyncDashboard from './Pages_for_web/Dashboard'
+import Onboarding from './Pages_for_web/Onboarding'
 
 
 export default function App() {
@@ -24,6 +28,10 @@ export default function App() {
         <Route path="/resume-analysis" element={<ResumeAnalysis />} />
 
       <Route path="/verify-otp" element={<VerifyOtp />} />
+
+       <Route path="/CareerSyncDashboard" element={<VerifyOtp />} />
+
+       <Route path='/Onboarding' element ={<Onboarding />} />
       </Routes>
     </BrowserRouter>
   )

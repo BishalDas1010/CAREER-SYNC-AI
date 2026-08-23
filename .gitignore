@@ -5,7 +5,7 @@ myenv/
 .env
 api_key/
 API_KEY.py
-API
+
 # Important/private files
 IMPORTANT.md
 
@@ -19,3 +19,7 @@ __pycache__/
 chroma_db/
 chroma_db_job/
 chroma_db_resume/
+
+# Node
+node_modules/
+dist/
