@@ -83,81 +83,39 @@ def get_user_from_token(authorization: Optional[str]):
             status_code=401,
             detail="Invalid or expired token"
         )
-
-
-
-# the Receive Registraction data from the fortend 
-#create the user in superbase Auth
-#handle errors and return the user data
 @app.post("/api/auth/register")
 def register(payload: RegisterPayload):
-    #this block is use to Try to create the account
     try:
-        #try to sing up in superbase if the user is new
         auth_response = supabase.auth.sign_up({
-            #all the data are comming from the frontend 
             "email": payload.email,
             "password": payload.password,
             "options": {
-                "data": {
-                    "full_name": payload.fullName
-                }
+                "data": {"full_name": payload.fullName},
+                "email_redirect_to": f"{FRONTEND_ORIGIN}/auth/callback",
             }
         })
-
-    # If registration fails, 
-    # check what went wrong and return an appropriate HTTP error to the
-    #  frontend
     except Exception as e:
         error = str(e)
-        #log the exact error with full traceback 
         logger.error("Supabase sign-up failed: %s", error, exc_info=True)
-        #If Supabase says Too many requests
         if "rate limit" in error.lower():
-            raise HTTPException(
-                #429 means: Too Many Requests.
-                status_code=429,
-                detail="Too many verification emails were requested. Please try again later."
-            )
-        #What if it's NOT a rate-limit error?
-        #Invalid email or Invalid details 
-        #400 Bad Request
-        raise HTTPException(
-            status_code=400,
-            detail=error
-        )
-    #Account creation failed, 
-    # so stop and send an error to the frontend 
-    #“If Supabase didn't return a user after the signup attempt,
-    #  something went wrong with account creation.”
+            raise HTTPException(status_code=429, detail="Too many verification emails were requested. Please try again later.")
+        raise HTTPException(status_code=400, detail=error)
+
     if not auth_response.user:
-
-        # Log the full response to understand why user is None
         logger.error("Supabase returned no user. Full response: %s", auth_response)
-        raise HTTPException(
-            status_code=400,
-            detail="Could not create account"
-        )
+        raise HTTPException(status_code=400, detail="Could not create account")
 
-
-    #After signup, Supabase may give you a session. -> 
     session = auth_response.session
-
     return {
         "message": "Registration successful",
-        "user": {
-            "id": auth_response.user.id,
-            "email": auth_response.user.email
-        },
-        #If session exists -> give the access token.
-        #If session doesn't exist -> give None.
+        "user": {"id": auth_response.user.id, "email": auth_response.user.email},
         "access_token": session.access_token if session else None,
         "refresh_token": session.refresh_token if session else None,
-        #“If there is no session, tell the frontend that email confirmation is required.”
         "email_confirmation_required": session is None
     }
 
- #
+
+
 @app.post("/api/auth/login")
 def login(payload: LoginPayload):
     """
@@ -194,7 +152,7 @@ def login(payload: LoginPayload):
         #.eq() means equals.
         .eq("id", user.id)
         #“I expect zero or one profile.”
-        .maybe_single()
+        #.maybe_single()
         #This actually runs the query against Supabase.
         .execute()
     )

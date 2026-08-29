@@ -3,6 +3,9 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
+// detectSessionInUrl (on by default) is what lets supabase-js pick up the
+// session automatically when the user lands back on /auth/callback after
+// clicking the confirmation link.
 export const supabase = supabaseUrl && supabaseAnonKey
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null
@@ -11,7 +14,8 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
 
 /**
  * Register a new user via the backend.
- * The backend handles Supabase sign-up, profile creation, and returns tokens if session exists.
+ * Supabase sends a confirmation EMAIL LINK (not an OTP code) — the user
+ * clicks it, lands on /auth/callback, and is sent to /login from there.
  */
 export async function registerUser(fullName, email, password) {
   const res = await fetch(`${API_BASE}/api/auth/register`, {
@@ -23,7 +27,6 @@ export async function registerUser(fullName, email, password) {
   const data = await res.json()
 
   if (!res.ok) {
-    // Throw with the backend's detail message for UI display / logging
     throw new Error(data.detail || 'Registration failed')
   }
 
@@ -32,6 +35,8 @@ export async function registerUser(fullName, email, password) {
 
 /**
  * Login with email and password. The backend returns profile info and tokens.
+ * We also sync the tokens into the supabase-js client so subsequent
+ * supabase.auth.* calls in the app (e.g. sign out) work correctly.
  */
 export async function loginWithPassword(email, password) {
   const res = await fetch(`${API_BASE}/api/auth/login`, {
@@ -46,53 +51,68 @@ export async function loginWithPassword(email, password) {
     throw new Error(data.detail || 'Login failed')
   }
 
+  if (supabase && data.access_token && data.refresh_token) {
+    await supabase.auth.setSession({
+      access_token: data.access_token,
+      refresh_token: data.refresh_token,
+    })
+  }
+
   return data
 }
 
 /**
- * Verify OTP (used after email confirmation or passwordless login).
- * This uses Supabase client directly.
+ * Resend the confirmation email if the user didn't get it / it expired.
+ * This is a direct Supabase client call — no backend round trip needed.
  */
-export async function verifyOtp(email, token) {
+export async function resendConfirmationEmail(email) {
   if (!supabase) {
     throw new Error('Supabase is not configured')
   }
 
-  const { data, error } = await supabase.auth.verifyOtp({
+  const { error } = await supabase.auth.resend({
+    type: 'signup',
     email,
-    token,
-    type: 'email',
+    options: {
+      emailRedirectTo: `${window.location.origin}/auth/callback`,
+    },
   })
 
   if (error) {
     throw new Error(error.message)
   }
 
-  return data
+  return { message: 'Confirmation email resent.' }
 }
 
 /**
- * Resend OTP / verification email.
- * Calls the backend endpoint which in turn asks Supabase to resend.
+ * Call this on your /auth/callback page after the user clicks the
+ * confirmation link. supabase-js (detectSessionInUrl) usually picks the
+ * session up automatically, but some Supabase project configs use the
+ * PKCE "code" flow instead — this handles both.
  */
-export async function resendOtp(email) {
-  const res = await fetch(`${API_BASE}/api/auth/resend-otp`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email }),
-  })
-
-  const data = await res.json()
-
-  if (!res.ok) {
-    throw new Error(data.detail || 'Failed to resend OTP')
+export async function completeEmailConfirmation() {
+  if (!supabase) {
+    throw new Error('Supabase is not configured')
   }
 
-  return data
+  const params = new URLSearchParams(window.location.search)
+  const code = params.get('code')
+
+  if (code) {
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code)
+    if (error) throw new Error(error.message)
+    return data // { session, user }
+  }
+
+  // Implicit flow: session should already be set by detectSessionInUrl.
+  const { data, error } = await supabase.auth.getSession()
+  if (error) throw new Error(error.message)
+  return data // { session }
 }
 
 /**
- * Check profile using an existing access token (e.g., after OAuth redirect).
+ * Check profile using an existing access token.
  * Backend verifies the token and returns the user profile.
  */
 export async function checkProfile(accessToken) {

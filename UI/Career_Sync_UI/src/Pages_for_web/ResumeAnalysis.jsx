@@ -119,33 +119,6 @@ function StatusIcon({ status }) {
 export default function ResumeAnalysis() {
   return (
     <div className="app-shell">
-      <aside className="sidebar">
-        <div className="sidebar-brand">
-          <div className="brand-icon">
-            <Sparkles size={18} />
-          </div>
-          <span>Career Sync AI</span>
-        </div>
-
-        <nav className="sidebar-nav">
-          {navItems.map((item) => (
-            <button key={item.label} className={`nav-item ${item.active ? "active" : ""}`}>
-              <item.icon size={18} />
-              <span>{item.label}</span>
-            </button>
-          ))}
-        </nav>
-
-        <div className="sidebar-nav sidebar-nav-bottom">
-          {bottomNavItems.map((item) => (
-            <button key={item.label} className="nav-item">
-              <item.icon size={18} />
-              <span>{item.label}</span>
-            </button>
-          ))}
-        </div>
-      </aside>
-
       <main className="main-content">
         <header className="page-header">
           <div>

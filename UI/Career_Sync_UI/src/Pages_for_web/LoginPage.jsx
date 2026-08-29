@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import './css_for_web/LoginPage.css'
 import { Link, useNavigate } from 'react-router-dom'
 
-import { supabase, checkProfile, loginWithPassword } from '../lib/supabaseClient'
+import { supabase, loginWithPassword } from '../lib/supabaseClient' 
 
 const IconMail = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -65,42 +65,21 @@ export default function LoginPage() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  const routeAfterAuth = async (session) => {
-    if (!session?.access_token) {
-      throw new Error('No access token returned from auth.')
-    }
-
-    const data = await checkProfile(session.access_token)
-    if (data.profile_exists) {
-      navigate('/dashboard', { state: { email: data.user.email, profile: data.profile } })
-    } else {
-      navigate('/create-account', { state: { email: data.user.email } })
-    }
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
     setSubmitting(true)
 
     try {
+      // loginWithPassword already syncs the Supabase session internally
+      // and the backend response already includes profile_exists/profile —
+      // no need for a second checkProfile round trip here.
       const data = await loginWithPassword(form.email, form.password)
 
-      if (supabase && data?.access_token && data?.refresh_token) {
-        await supabase.auth.setSession({
-          access_token: data.access_token,
-          refresh_token: data.refresh_token,
-        })
-      }
-
-      if (data?.access_token) {
-        await routeAfterAuth({ access_token: data.access_token })
-      } else if (data?.profile_exists !== undefined) {
-        if (data.profile_exists) {
-          navigate('/dashboard', { state: { email: data.user.email, profile: data.profile } })
-        } else {
-          navigate('/create-account', { state: { email: data.user.email } })
-        }
+      if (data.profile_exists) {
+        navigate('/Dashboard', { state: { email: data.user.email, profile: data.profile } })
+      } else {
+        navigate('/onboarding', { state: { email: data.user.email } })
       }
     } catch (err) {
       console.error('Login failed:', err)
