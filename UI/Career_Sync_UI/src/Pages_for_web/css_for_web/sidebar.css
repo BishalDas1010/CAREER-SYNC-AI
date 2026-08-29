@@ -1,0 +1,5 @@
+.nav-item.nav-item-active {
+  background: var(--purple-light, #ede9fe); /* match your accent */
+  color: var(--purple-600, #7c3aed);
+  border-radius: 8px;
+}

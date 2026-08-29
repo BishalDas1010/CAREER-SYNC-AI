@@ -145,7 +145,7 @@ const handleSubmit = async (e) => {
             aria-label="Toggle dark mode"
             type="button"
           >
-            {theme === "light" ? "🌙" : "☀️"}
+            {theme === "light" ? "" : ""}
           </button>
           <Link to="/" className="back-home-link">
             Back to home
@@ -182,7 +182,7 @@ const handleSubmit = async (e) => {
 
         <section className="login-card-wrapper">
           <div className="login-card">
-            <h2 className="card-title">Create Your Account ✨</h2>
+            <h2 className="card-title">Create Your Account </h2>
             <p className="card-subtitle">Start your career transformation today</p>
 
             <form onSubmit={handleSubmit} className="login-form" noValidate>
@@ -190,7 +190,7 @@ const handleSubmit = async (e) => {
                 Full Name
               </label>
               <div className="input-with-icon">
-                <span className="input-icon">👤</span>
+                <span className="input-icon"></span>
                 <input
                   id="fullName"
                   name="fullName"
@@ -207,7 +207,7 @@ const handleSubmit = async (e) => {
                 Email Address
               </label>
               <div className="input-with-icon">
-                <span className="input-icon">✉️</span>
+                <span className="input-icon"></span>
                 <input
                   id="email"
                   name="email"
@@ -224,7 +224,7 @@ const handleSubmit = async (e) => {
 
               {error?.type === "exists" && (
                 <div className="caution-banner" role="alert">
-                  <span className="caution-icon">⚠️</span>
+                  <span className="caution-icon"></span>
                   <div className="caution-text">
                     <span>{error.message}</span>
                     <Link to="/login" className="caution-link">
@@ -238,7 +238,7 @@ const handleSubmit = async (e) => {
                 Password
               </label>
               <div className="input-with-icon">
-                <span className="input-icon">🔒</span>
+                <span className="input-icon"></span>
                 <input
                   id="password"
                   name="password"
@@ -255,7 +255,7 @@ const handleSubmit = async (e) => {
                   onClick={() => setShowPassword((s) => !s)}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? "🙈" : "👁️"}
+                  {showPassword ? "" : ""}
                 </button>
               </div>
 
@@ -263,7 +263,7 @@ const handleSubmit = async (e) => {
                 Confirm Password
               </label>
               <div className="input-with-icon">
-                <span className="input-icon">🔒</span>
+                <span className="input-icon"></span>
                 <input
                   id="confirmPassword"
                   name="confirmPassword"
@@ -282,7 +282,7 @@ const handleSubmit = async (e) => {
                     showConfirmPassword ? "Hide password" : "Show password"
                   }
                 >
-                  {showConfirmPassword ? "🙈" : "👁️"}
+                  {showConfirmPassword ? "" : ""}
                 </button>
               </div>
 
@@ -331,7 +331,7 @@ const handleSubmit = async (e) => {
 
       {/* Trust footer */}
       <footer className="login-footer">
-        <span className="footer-icon">🛡️</span>
+        <span className="footer-icon"></span>
         <div>
           <p className="footer-title">Your data is secure with us.</p>
           <p className="footer-subtext">
