@@ -38,10 +38,10 @@ const initialMessages = [
 ];
 
 const suggestions = [
-  { icon: FileText, iconBg: "#e2f7e6", iconColor: "#16a34a", title: "Improve my resume", subtitle: "Get tips to improve your resume" },
-  { icon: Map, iconBg: "#e5f2ff", iconColor: "#2f7fe0", title: "Skill roadmap", subtitle: "Find a roadmap for data analyst" },
-  { icon: User, iconBg: "#f3eaff", iconColor: "#8b5cf6", title: "Mock interview", subtitle: "Prepare for your next interview" },
-  { icon: Briefcase, iconBg: "#feead9", iconColor: "#f0873c", title: "Job search tips", subtitle: "Get job search strategies" },
+  { icon: FileText, iconBg: "#eeecfd", iconColor: "#5b4df0", title: "Improve my resume", subtitle: "Get tips to improve your resume" },
+  { icon: Map, iconBg: "#eeecfd", iconColor: "#5b4df0", title: "Skill roadmap", subtitle: "Find a roadmap for data analyst" },
+  { icon: User, iconBg: "#eeecfd", iconColor: "#5b4df0", title: "Mock interview", subtitle: "Prepare for your next interview" },
+  { icon: Briefcase, iconBg: "#eeecfd", iconColor: "#5b4df0", title: "Job search tips", subtitle: "Get job search strategies" },
 ];
 
 function formatTime(date) {
@@ -126,6 +126,8 @@ export default function ChatAssistant() {
     setInput("");
   }
 
+  const showSuggestions = messages.length === initialMessages.length;
+
   return (
     <main className="chat-page">
       <div className="chat-header">
@@ -154,23 +156,25 @@ export default function ChatAssistant() {
         <div ref={scrollRef} />
       </div>
 
-      <div className="suggestion-grid">
-        {suggestions.map(({ icon: Icon, iconBg, iconColor, title, subtitle }) => (
-          <button
-            key={title}
-            className="suggestion-card"
-            onClick={() => sendMessage(title)}
-          >
-            <div className="suggestion-icon" style={{ background: iconBg, color: iconColor }}>
-              <Icon size={16} />
-            </div>
-            <div>
-              <div className="suggestion-title">{title}</div>
-              <div className="suggestion-subtitle">{subtitle}</div>
-            </div>
-          </button>
-        ))}
-      </div>
+      {showSuggestions && (
+        <div className="suggestion-grid">
+          {suggestions.map(({ icon: Icon, iconBg, iconColor, title, subtitle }) => (
+            <button
+              key={title}
+              className="suggestion-card"
+              onClick={() => sendMessage(title)}
+            >
+              <div className="suggestion-icon" style={{ background: iconBg, color: iconColor }}>
+                <Icon size={16} />
+              </div>
+              <div>
+                <div className="suggestion-title">{title}</div>
+                <div className="suggestion-subtitle">{subtitle}</div>
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
 
       <form className="chat-input-bar" onSubmit={handleSubmit}>
         <input
@@ -183,7 +187,7 @@ export default function ChatAssistant() {
         <div className="chat-input-actions">
           <button type="button" className="chat-icon-btn"><Paperclip size={17} /></button>
           <button type="button" className="chat-icon-btn"><Globe size={17} /></button>
-          <button type="submit" className="chat-send-btn">
+          <button type="submit" className="chat-send-btn" disabled={!input.trim()}>
             <Send size={16} />
           </button>
         </div>
