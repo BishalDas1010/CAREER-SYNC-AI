@@ -37,6 +37,15 @@ function Sidebar() {
           <span>Resume Analysis</span>
         </NavLink>
 
+
+        <NavLink
+          to="/chat_history"
+          className={({ isActive }) => `nav-item ${isActive ? "nav-item-active" : ""}`}
+        >
+          <FileText size={18} />
+          <span>Chat History </span>
+        </NavLink>
+
         <NavLink
           to="/chat-assistant"
           className={({ isActive }) => `nav-item ${isActive ? "nav-item-active" : ""}`}
@@ -75,7 +84,11 @@ function Sidebar() {
           <div className="profile-email">vishal@example.com</div>
         </div>
         <ChevronDown size={16} />
+      
       </div>
+
+
+    
     </aside>
   );
 }

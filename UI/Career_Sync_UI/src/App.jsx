@@ -1,4 +1,3 @@
-
 import React from 'react'
 import './index.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
@@ -14,6 +13,13 @@ import Sidebar from './Pages_for_web/Sidebar'
 
 import DashboardLayout from './Pages_for_web/DashboardLayout'
 import ChatAssistant from './Pages_for_web/Chat'
+
+
+import ChatHistory from './Pages_for_web/ChatHistory'
+
+
+
+
 
 export default function App() {
   return (
@@ -31,6 +37,8 @@ export default function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/resume-analysis" element={<ResumeAnalysis />} />
       <Route path ="/chat-assistant" element = {<ChatAssistant />}/>
+      <Route path ="/chat_history" element = {< ChatHistory/>}/>
+
     </Route>
 
       </Routes>
