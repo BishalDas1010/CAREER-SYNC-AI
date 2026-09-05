@@ -9,7 +9,7 @@ from langchain_community.document_loaders import (
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 
-class pdf_upload:
+class docs_loader:
     def __init__(self, pdf_path):
         self.pdf_path = pdf_path
 
@@ -30,13 +30,17 @@ class pdf_upload:
     # PDF loader
     def pdf_loader(self):
         loader = PyPDFLoader(self.pdf_path)
-
         return loader.load()
 
     def text_loader(self):
-        loader = TextLoader(self.pdf_path)
-
-        return loader.load()
+        # Add encoding fallback to avoid UnicodeDecodeError
+        loader = TextLoader(self.pdf_path, encoding='utf-8')
+        try:
+            return loader.load()
+        except UnicodeDecodeError:
+            # Fallback to a different encoding if utf-8 fails
+            loader = TextLoader(self.pdf_path, encoding='latin-1')
+            return loader.load()
 
     def csv_loader(self):
         loader = CSVLoader(self.pdf_path)
@@ -59,14 +63,14 @@ class pdf_upload:
 
     # Step 2: Chunking / Splitting
     def chunking(self, docs, CHUNK_SIZE, CHUNK_OVERLAP):
+        # If no documents were loaded, return empty list
+        if not docs:
+            return []
 
         text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size= CHUNK_SIZE,
-            chunk_overlap= CHUNK_OVERLAP
+            chunk_size=CHUNK_SIZE,
+            chunk_overlap=CHUNK_OVERLAP
         )
 
         chunks = text_splitter.split_documents(docs)
-
         return chunks
-
-    

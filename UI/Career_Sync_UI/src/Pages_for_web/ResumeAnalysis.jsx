@@ -1,4 +1,7 @@
 import React from "react";
+import { Lottie } from "lottie-react";                        // FIXED: default import
+import emptyAnimation from '../assets/Empty red (1).json';
+import './css_for_web/ResumeAnalysis.css';
 
 // Minimal placeholder icons to avoid pulling the `lucide-react` dependency
 // in environments where React 19 causes peer dependency conflicts.
@@ -27,7 +30,8 @@ const AlertTriangle = (props) => <IconPlaceholder label="!" {...props} />;
 const XCircle = (props) => <IconPlaceholder label="✕" {...props} />;
 const ChevronRight = (props) => <IconPlaceholder label=">" {...props} />;
 const Wand2 = (props) => <IconPlaceholder label="✨" {...props} />;
-import './css_for_web/ResumeAnalysis.css'
+
+// (duplicate import removed – already imported above)
 
 const navItems = [
   { icon: LayoutDashboard, label: "Dashboard" },
@@ -86,6 +90,27 @@ const suggestions = [
   },
 ];
 
+// ---------- Empty State ----------
+function EmptyResumeState() {
+  return (
+    <div className="empty-state">
+      <Lottie
+        src={emptyAnimation}
+        loop={true}
+        autoplay={true}
+        style={{ width: 300, height: 300 }}
+      />
+      <h2>No Resume Uploaded Yet</h2>
+      <p>Upload your resume to get a detailed analysis.</p>
+      <button className="btn-primary" type="button">
+        <UploadCloud size={16} />
+        Upload Resume
+      </button>
+    </div>
+  );
+}
+
+// ---------- Helpers ----------
 function ScoreRing({ value }) {
   const radius = 30;
   const circumference = 2 * Math.PI * radius;
@@ -116,7 +141,21 @@ function StatusIcon({ status }) {
   return <XCircle size={18} className="icon-bad" />;
 }
 
-export default function ResumeAnalysis() {
+// ---------- Main Component ----------
+export default function ResumeAnalysis({ hasResume = false }) {   // FIXED: default false
+
+  // Early return for empty state
+  if (!hasResume) {
+    return (
+      <div className="app-shell">
+        <main className="main-content">
+          <EmptyResumeState />
+        </main>
+      </div>
+    );
+  }
+
+  // Render analysis dashboard
   return (
     <div className="app-shell">
       <main className="main-content">
