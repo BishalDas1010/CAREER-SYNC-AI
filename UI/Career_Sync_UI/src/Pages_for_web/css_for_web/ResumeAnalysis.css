@@ -482,3 +482,35 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;               /* or 100vh to take full viewport */
+  text-align: center;
+  width: 100%;                /* ensure full width */
+  padding: 2rem;              /* breathing room on small screens */
+  box-sizing: border-box;
+}
+
+.empty-state h2 {
+  margin-top: 1.5rem;
+  font-size: 1.8rem;
+  color: #1e293b;
+  max-width: 500px;           /* optional: limit line length */
+}
+
+.empty-state p {
+  color: #64748b;
+  font-size: 1rem;
+  max-width: 400px;           /* optional: limit line length */
+}
+
+/* If you want the Lottie itself to be centered (it already is) */
+.empty-state .lottie-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
