@@ -74,3 +74,7 @@ class docs_loader:
 
         chunks = text_splitter.split_documents(docs)
         return chunks
+    def similarity_search():
+        pass
+    def analze_resume():
+        pass

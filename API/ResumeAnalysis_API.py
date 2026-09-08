@@ -1,4 +1,6 @@
 import sys
+from fastapi.middleware.cors import CORSMiddleware
+import os
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 # FastAPI gives us the tools needed to create our API
@@ -24,6 +26,20 @@ from mainCode.docs_loader import docs_loader
 app = FastAPI(
     title="Resume Upload API",
     description="Upload your resume file"
+)
+
+
+
+
+# Allowed origins – set via environment variable or list
+origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -115,6 +131,47 @@ async def upload_Resume(file:UploadFile = File(...)):
             detail=f"An internal error occurred while processing the file: {str(e)}"
         )
 
+# mainCode/resume_analyzer.py
+
+    def analyze_resume(chunks, file_type):
+        """
+        Given a list of text chunks, return analysis data matching the UI structure.
+        This is a placeholder – you can later integrate with an LLM or rule-based system.
+        """
+        # Dummy data – in reality you'd parse sections, extract keywords, etc.
+        score_cards = [
+            {"label": "Overall Score", "value": 78, "suffix": "/100", "status": "Good", "tone": "good"},
+            {"label": "ATS Compatibility", "value": 92, "suffix": "%", "status": "Excellent", "tone": "good"},
+            {"label": "Keywords Matched", "value": 24, "suffix": "/35", "status": "Improve", "tone": "warn"},
+            {"label": "Readability", "value": "A-", "suffix": "", "status": "Strong", "tone": "good"},
+        ]
+        sections = [
+            {"name": "Contact Information", "score": 100, "status": "complete"},
+            {"name": "Professional Summary", "score": 85, "status": "complete"},
+            {"name": "Work Experience", "score": 74, "status": "complete"},
+            {"name": "Skills", "score": 60, "status": "warn"},
+            {"name": "Education", "score": 100, "status": "complete"},
+            {"name": "Projects", "score": 45, "status": "missing"},
+        ]
+        matched = ["Python", "REST APIs", "Git", "SQL", "Data Structures", "FastAPI", "Docker"]
+        missing = ["Kubernetes", "LangChain", "System Design", "CI/CD", "AWS"]
+        suggestions = [
+            {
+                "priority": "High",
+                "title": "Add measurable impact to your project bullets",
+                "detail": "3 of 5 project descriptions lack quantified outcomes."
+            },
+            # ... more suggestions
+        ]
+        return {
+            "scoreCards": score_cards,
+            "sections": sections,
+            "matchedKeywords": matched,
+            "missingKeywords": missing,
+            "suggestions": suggestions,
+        }
+    analysis = analyze_resume(chunks, file_type)
+
     return {
 
         # A simple success message
@@ -134,5 +191,7 @@ async def upload_Resume(file:UploadFile = File(...)):
 
         # Where the file was saved
         # Example: "uploads/Vishal_Resume.pdf"
-        "saved_path": str(file_path)
+        "saved_path": str(file_path),
+
+        "analysis": analysis,
     }

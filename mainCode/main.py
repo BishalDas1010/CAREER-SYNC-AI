@@ -84,9 +84,9 @@ print("Vector store saved successfully!")
 
 # LLM and retrievers
 llm = ChatMistralAI(
-    model="mistral-large-latest",
-    temperature=0.2,
-    mistral_api_key=mistral_api_key,
+    model="mistral-small-latest",
+    api_key=os.getenv("MISTRAL_API_KEY"),
+    temperature=0
 )
 
 #similarity search into the vactor DB
@@ -364,17 +364,17 @@ while True:
     context = build_context(retrieved_docs)
 
     rag_prompt = f"""
-You are a helpful assistant answering questions based ONLY on the provided context.
-If the answer is not present in the context, say you don't have enough information.
+            You are a helpful assistant answering questions based ONLY on the provided context.
+            If the answer is not present in the context, say you don't have enough information.
 
-Context:
-{context}
+            Context:
+            {context}
 
-Question:
-{query}
+            Question:
+            {query}
 
-Answer clearly and concisely, citing chunk IDs (like [chunk_2]) where relevant.
-"""
+            Answer clearly and concisely, citing chunk IDs (like [chunk_2]) where relevant.
+    """
 
     print("\n\n" + "=" * 70)
     print("              FINAL ANSWER GENERATION")
