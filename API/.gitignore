@@ -23,9 +23,3 @@ chroma_db_resume/
 # Node
 node_modules/
 dist/
-
-
-
-
-.env
-__pycache__/

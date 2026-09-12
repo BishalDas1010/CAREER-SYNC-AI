@@ -7,8 +7,6 @@ from langchain_community.document_loaders import (
     )
 
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_chroma import Chroma
 
 
 class docs_loader:
@@ -24,6 +22,7 @@ class docs_loader:
             ".pdf": "pdf",
             ".txt": "text",
             ".csv": "csv"
+
         }
 
         return loaders.get(extension, None)
@@ -74,39 +73,8 @@ class docs_loader:
         )
 
         chunks = text_splitter.split_documents(docs)
-
-        #embadding genaration
-        try:
-            Embadding = HuggingFaceEmbeddings(
-                model_name = "all-MiniLM-L6-v2",
-                model_kwargs ={"device":"cuda"}
-
-            )
-            _ = Embadding.embed_query("test")
-
-        except Exception:
-            print("cuda is not available, falling back to cpu")
-
-            Embadding = HuggingFaceEmbeddings(
-                model_name = "all-MiniLM-L6-v2",
-                model_kwargs ={"device":"cpu"}
-
-            )
-
-        #store the in the vactor store
-        vector_store = Chroma.from_documents(
-            documents=chunks,
-            embedding=Embadding,
-            persist_directory="./cv_db"
-        )
-
-        print("data save successfully! ")
-        
-
         return chunks
     def similarity_search():
         pass
-
-    
     def analze_resume():
         pass

@@ -30,39 +30,33 @@ loader = PyPDFLoader(PDF_PATH)
 docs = loader.load()
 print(f"PDF loaded successfully! Number of documents: {len(docs)}")
 
-
-#text splitter is used for spliting the pdf/ docoment files into the multiple
-#objects
 text_splitter = RecursiveCharacterTextSplitter(
     chunk_size=CHUNK_SIZE,
     chunk_overlap=CHUNK_OVERLAP,
     add_start_index=True, #
 )
 
-#chunks where all the docs are store 
 chunks = text_splitter.split_documents(docs)
 print(f"Total chunks: {len(chunks)}")
 
 
 # Add unique chunk IDs
-#we just add there the unique id in each Chunks like 1 2 3 4
 for i, chunk in enumerate(chunks):
     chunk.metadata["chunk_id"] = f"chunk_{i}"
 
 # Leave two blank lines before printing the next text.
 print("\n\nALL CHUNKS (preview)")
 for chunk in chunks:
-    print("\n" + "=" * 70) 
+    print("\n" + "=" * 70) # this print a single spape and === 70 timesw
     print("CHUNK ID:", chunk.metadata["chunk_id"])
     print("-" * 70)
     print(chunk.page_content[:300])  # preview only [start:end] from 0 to 300
 
-# after the chunks we genarate the embadding vlues of the chunks
+# 
 # Embeddings Genaration if Gpu not aval then shefted to CPU
 try:
-    # embadding vlaues 
     embedding = HuggingFaceEmbeddings(
-        model_name= EMBEDDING_MODEL,
+        model_name=EMBEDDING_MODEL,
         model_kwargs={"device": "cuda"},
     )
     _ = embedding.embed_query("test")
@@ -84,11 +78,11 @@ print("Vector store saved successfully!")
 
 # LLM and retrievers
 llm = ChatMistralAI(
-    model="mistral-small-latest",
-    api_key=os.getenv("MISTRAL_API_KEY"),
-    temperature=0
+    model="mistral-large-latest",
+    temperature=0.2,
+    mistral_api_key=mistral_api_key,
 )
-        
+
 #similarity search into the vactor DB
 similarity_retriever = vector_store.as_retriever(
     search_type="similarity",
@@ -96,7 +90,7 @@ similarity_retriever = vector_store.as_retriever(
 )
 # Maximum marginal Relevance  retrive into the vactor DB
 mmr_retriever = vector_store.as_retriever(
-    search_type="mmr", #
+    search_type="mmr",
     search_kwargs={"k": 2}
 )
 
@@ -110,7 +104,7 @@ mqr_retriever = MultiQueryRetriever.from_llm(
 )
 
 #  Query and retrieve
-query = "Which skills do I have ?"
+query = "Which skills do I have?"
 #dubal space 
 print(f"\n\nQUERY: {query}")
 
@@ -129,7 +123,6 @@ def generate_ground_truth_ids(question, candidate_docs):
     to answering the question.
     """
     chunks_text = ""
-    
     for doc in candidate_docs:
         chunk_id = doc.metadata.get("chunk_id")
 
@@ -364,17 +357,17 @@ while True:
     context = build_context(retrieved_docs)
 
     rag_prompt = f"""
-            You are a helpful assistant answering questions based ONLY on the provided context.
-            If the answer is not present in the context, say you don't have enough information.
+You are a helpful assistant answering questions based ONLY on the provided context.
+If the answer is not present in the context, say you don't have enough information.
 
-            Context:
-            {context}
+Context:
+{context}
 
-            Question:
-            {query}
+Question:
+{query}
 
-            Answer clearly and concisely, citing chunk IDs (like [chunk_2]) where relevant.
-    """
+Answer clearly and concisely, citing chunk IDs (like [chunk_2]) where relevant.
+"""
 
     print("\n\n" + "=" * 70)
     print("              FINAL ANSWER GENERATION")

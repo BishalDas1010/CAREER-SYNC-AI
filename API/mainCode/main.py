@@ -88,7 +88,7 @@ llm = ChatMistralAI(
     api_key=os.getenv("MISTRAL_API_KEY"),
     temperature=0
 )
-        
+
 #similarity search into the vactor DB
 similarity_retriever = vector_store.as_retriever(
     search_type="similarity",

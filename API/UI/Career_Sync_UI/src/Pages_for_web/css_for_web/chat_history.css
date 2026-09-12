@@ -1,0 +1,250 @@
+/* chat_history.css */
+
+.history-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Header */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.page-header h1 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0;
+  color: #1e293b;
+}
+
+.page-header p {
+  margin: 0.25rem 0 0;
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  background-color: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  white-space: nowrap;
+}
+
+.btn-primary:hover {
+  background-color: #2563eb;
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+}
+
+/* Search bar */
+.history-search {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: #f1f5f9;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  margin-bottom: 2rem;
+  border: 1px solid #e2e8f0;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.history-search:focus-within {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.history-search svg {
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+.history-search input {
+  border: none;
+  background: transparent;
+  width: 100%;
+  padding: 0.4rem 0;
+  font-size: 1rem;
+  outline: none;
+  color: #1e293b;
+}
+
+.history-search input::placeholder {
+  color: #94a3b8;
+}
+
+/* Empty state */
+.history-empty {
+  text-align: center;
+  padding: 4rem 1rem;
+  color: #64748b;
+}
+
+.history-empty svg {
+  color: #cbd5e1;
+  margin-bottom: 0.75rem;
+}
+
+.history-empty p {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* List */
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Row */
+.history-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: #ffffff;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  transition: background-color 0.15s, border-color 0.15s, box-shadow 0.15s;
+  cursor: pointer;
+}
+
+.history-row:hover {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.history-row:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Icon */
+.history-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: #eff6ff;
+  border-radius: 8px;
+  color: #3b82f6;
+}
+
+/* Text content */
+.history-text {
+  flex: 1;
+  min-width: 0; /* prevent overflow */
+}
+
+.history-title {
+  font-weight: 500;
+  color: #0f172a;
+  font-size: 0.95rem;
+  margin-bottom: 0.15rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history-preview {
+  font-size: 0.85rem;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Date */
+.history-date {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  flex-shrink: 0;
+  padding-left: 0.5rem;
+  white-space: nowrap;
+}
+
+/* Delete button */
+.history-delete-btn {
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.history-delete-btn:hover {
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+.history-delete-btn:focus-visible {
+  outline: 2px solid #ef4444;
+  outline-offset: 2px;
+}
+
+/* Responsive tweaks */
+@media (max-width: 640px) {
+  .history-page {
+    padding: 1rem;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .history-row {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .history-date {
+    margin-left: auto;
+  }
+
+  .history-text {
+    flex: 1 1 100%;
+    order: 2;
+  }
+
+  .history-icon {
+    order: 1;
+  }
+
+  .history-date {
+    order: 3;
+  }
+
+  .history-delete-btn {
+    order: 4;
+    margin-left: auto;
+  }
+}
