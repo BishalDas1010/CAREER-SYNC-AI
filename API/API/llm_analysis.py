@@ -1,47 +1,109 @@
-from langchain_chroma import Chroma
-import os
-from langchain_mistralai import ChatMistralAI
-from langchain_classic.retrievers.multi_query import MultiQueryRetriever
+from langchain_groq import ChatGroq
+from langchain_core.prompts import ChatPromptTemplate
+from pydantic import BaseModel
+from typing import List, Literal
 from dotenv import load_dotenv
+import os
+
 load_dotenv()
-mistral_api_key = os.getenv("LLM_MISTRAL_API_KEY")
-if not mistral_api_key:
-    raise ValueError("Mistral API key not found ")
+
+GROQ_API_KEY = os.getenv("API_KEY_GROQ")
+if not GROQ_API_KEY:
+    raise ValueError("Groq API key not found in environment variables (GROQ_KEY).")
+
+
+# Schemas 
+
+class ScoreCard(BaseModel):
+    label: str
+    value: int | str
+    suffix: str
+    status: Literal["good", "warning", "bad"]
+    tone: Literal["positive", "neutral", "negative"]
+
+
+class Section(BaseModel):
+    name: str
+    score: int
+    status: Literal["good", "warning", "bad"]
+
+
+class Suggestion(BaseModel):
+    priority: Literal["high", "medium", "low"]
+    title: str
+    detail: str
+
+
+class ResumeAnalysis(BaseModel):
+    scoreCards: List[ScoreCard]
+    sections: List[Section]
+    matchedKeywords: List[str]
+    missingKeywords: List[str]
+    suggestions: List[Suggestion]
+
+
+#  LLM 
+
+llm = ChatGroq(
+    model="openai/gpt-oss-20b",
+    api_key=GROQ_API_KEY,
+    temperature=0,
+    max_tokens=8192,
+)
+
+structured_llm = llm.with_structured_output(ResumeAnalysis)
+
+prompt = ChatPromptTemplate.from_messages([
+    (
+        "system",
+        """
+        You are an expert resume and ATS analyzer.
+
+        Analyze the resume carefully.
+
+        Return:
+        - Overall Score
+        - ATS Compatibility
+        - Keywords Matched
+        - Readability
+        - Section scores
+        - Matched keywords
+        - Missing keywords
+        - Improvement suggestions
+
+        Scores must be between 0 and 100.
+
+        Do not invent information that isn't present
+        in the resume.
+
+        For every `status` field use only: "good", "warning", or "bad".
+        For every `tone` field use only: "positive", "neutral", or "negative".
+        For every suggestion `priority` use only: "high", "medium", or "low".
+        """,
+    ),
+    (
+        "human",
+        """
+        Resume:
+
+        {resume}
+        """,
+    ),
+])
+
+chain = prompt | structured_llm
+
+
+#  Entry point
 
 def analyze_resume(chunks, file_type):
-    """
-    Given a list of text chunks, return analysis data matching the UI structure.
-    This is a placeholder - you can later integrate with an LLM or rule-based system.
-    """
-    # Dummy data - in reality you'd parse sections, extract keywords, etc.
-    score_cards = [
-        {"label": "Overall Score", "value": 10, "suffix": "/100", "status": "Good", "tone": "good"},
-        {"label": "ATS Compatibility", "value": 92, "suffix": "%", "status": "Excellent", "tone": "good"},
-        {"label": "Keywords Matched", "value": 24, "suffix": "/35", "status": "Improve", "tone": "warn"},
-        {"label": "Readability", "value": "A-", "suffix": "", "status": "Strong", "tone": "good"},
-    ]
-    sections = [
-        {"name": "Contact Information", "score": 100, "status": "complete"},
-        {"name": "Professional Summary", "score": 85, "status": "complete"},
-        {"name": "Work Experience", "score": 74, "status": "complete"},
-        {"name": "Skills", "score": 60, "status": "warn"},
-        {"name": "Education", "score": 100, "status": "complete"},
-        {"name": "Projects", "score": 45, "status": "missing"},
-    ]
-    matched = ["Python", "REST APIs", "Git", "SQL", "Data Structures", "FastAPI", "Docker"]
-    missing = ["Kubernetes", "LangChain", "System Design", "CI/CD", "AWS"]
-    suggestions = [
-        {
-            "priority": "High",
-            "title": "Add measurable impact to your project bullets",
-            "detail": "3 of 5 project descriptions lack quantified outcomes."
-        },
-        # ... more suggestions
-    ]
-    return {
-        "scoreCards": score_cards,
-        "sections": sections,
-        "matchedKeywords": matched,
-        "missingKeywords": missing,
-        "suggestions": suggestions,
-    }
+
+    resume_text = "\n\n".join(
+        chunk.page_content for chunk in chunks
+    ).strip()
+
+    if not resume_text:
+        raise ValueError("No extractable text found in the uploaded file.")
+
+    result = chain.invoke({"resume": resume_text})
+    return result.model_dump()
