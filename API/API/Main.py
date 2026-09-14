@@ -47,7 +47,8 @@ class ProfileCreate(BaseModel):
     education: str = ""
     experience: str = ""
     career_goals: str = ""
-# 
+
+
 class RegisterPayload(BaseModel):
     fullName: str
     email: str
